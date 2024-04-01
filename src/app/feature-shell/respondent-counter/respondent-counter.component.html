@@ -1,4 +1,13 @@
 <div class="full-screen-container respondent-counter">
-    <span>respondent-counter works!</span>
+    <div class="container">
+        <mat-card>
+            @if (service.loading) {
+                <mat-progress-bar color="accent"  mode="indeterminate"></mat-progress-bar>
+            }
+            <mat-card-content>
+                <svg #respondentCounterChart></svg>
+            </mat-card-content>
+        </mat-card>
+    </div>
 </div>
 

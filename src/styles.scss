@@ -1,7 +1,41 @@
-body {
-    margin: 0
+$breakpoints: (
+ xs: 0,
+ sm: 576px,
+ md: 768px,
+ lg: 992px,
+ xl: 1200px
+);
+$container-max-widths: (
+ sm: 540px,
+ md: 720px,
+ lg: 940px,
+ xl: 1000px
+);
+
+@mixin make-max-widths-container-width($max-widths: $container-max-widths, $breakpoints: $breakpoints) {
+    @each $breakpoint, $container-max-width in $max-widths {
+       @media (min-width: map-get($breakpoints, $breakpoint)) {
+         max-width: $container-max-width;
+       }
+    }
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .full-screen-container {
     height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    padding: 1em;
+    @include make-max-widths-container-width();
+}
+
+.mat-mdc-card {
+    overflow: hidden;
 }
