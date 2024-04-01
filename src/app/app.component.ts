@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RespondentCounterComponent } from './feature-shell/respondent-counter/respondent-counter.component';
+import { SecondChartComponent } from './feature-shell/second-chart/second-chart.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RespondentCounterComponent, SecondChartComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
