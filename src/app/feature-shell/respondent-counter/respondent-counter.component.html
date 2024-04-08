@@ -1,13 +1,66 @@
 <div class="full-screen-container respondent-counter">
     <div class="container">
-        <mat-card>
-            @if (service.loading) {
-                <mat-progress-bar color="accent"  mode="indeterminate"></mat-progress-bar>
-            }
+        <mat-card class="mb-3">
+            <mat-card-header class="mb-4">
+                <mat-card-title>Welche Berufsgruppen haben teilgenommen?</mat-card-title>
+                <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon">
+                    <mat-icon fontIcon="autorenew"></mat-icon>
+                </div>
+                <mat-card-subtitle>Die Daten werden alle {{ service.pollingIntervalDelay / 1000 }} Sekunden neu geladen</mat-card-subtitle>
+            </mat-card-header>
             <mat-card-content>
-                <svg #respondentCounterChart></svg>
+                <div class="respondent-counter__container mb-4">
+                    <div #respondentCounterWrapper class="respondent-counter__wrapper">
+                        <div class="respondent-counter__overlay">
+                            @if(service.showTotal) {
+                                <span>
+                                    {{ respondentCount }} Antworten aus {{ totalCount }}
+                                </span>
+                            } @else {
+                                <span>
+                                    {{ respondentCount }} Antworten
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div>
+                        <label>Zeige Anteil an Grundgesamtheit</label>
+                        <mat-radio-group
+                            class="radio-group"
+                            (change)="onShowTotalChange($event)"
+                        >
+                            <mat-radio-button [checked]="!service.showTotal" value="false">Nein</mat-radio-button>
+                            <mat-radio-button [checked]="service.showTotal" value="true">Ja</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div #respondentCounterLegend></div>
+                </div>
             </mat-card-content>
         </mat-card>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Dateneingabe simulieren
+                </mat-panel-title>
+                <mat-panel-description>
+                    Simulierte Daten bleiben bis zum Reload des Browsers erhalten
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="actions">
+                @for(item of this.service.data(); track item.computed_response) {
+                    @if(item.isRespondent) {
+                        <button mat-stroked-button (click)="service.addSimulatedData(item)">
+                            <mat-icon fontIcon="add" />
+                            {{ item.computed_response }}
+                        </button>
+                    }
+                }
+            </div>
+        </mat-expansion-panel>
+        
     </div>
 </div>
 
