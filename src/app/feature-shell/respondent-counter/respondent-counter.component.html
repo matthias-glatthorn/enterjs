@@ -14,11 +14,11 @@
                         <div class="respondent-counter__overlay">
                             @if(service.showTotal) {
                                 <span>
-                                    {{ respondentCount }} Antworten aus {{ totalCount }}
+                                    {{ respondentCount ?? 0 }} Antworten aus {{ totalCount }}
                                 </span>
                             } @else {
                                 <span>
-                                    {{ respondentCount }} Antworten
+                                    {{ respondentCount ?? 0 }} Antworten
                                 </span>
                             }
                         </div>

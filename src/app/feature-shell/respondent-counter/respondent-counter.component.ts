@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { EnterjsGraph, RespondentCounterDataItem } from '../../data-access/data.model';
 import { stringToBoolean } from '../../shared/util-common/string-to-boolean';
 import { createGraph } from './respondent-counter-graph/respondent-counter-graph';
+import { confetti } from 'tsparticles-confetti';
+import { triggerConfetti } from '../../shared/util-common/confetti';
 
 export interface ArcData {
   endAngle: number;
@@ -28,7 +30,7 @@ export class RespondentCounterComponent implements AfterViewInit {
   @ViewChild('respondentCounterWrapper') respondentCounterWrapper!: ElementRef;
   @ViewChild('respondentCounterLegend') respondentCounterLegend!: ElementRef;
 
-  protected respondentCount = 0;
+  protected respondentCount: number | undefined = undefined;
   protected totalCount = 0;
   protected graph?: EnterjsGraph<RespondentCounterDataItem[]>;
 
@@ -54,13 +56,18 @@ export class RespondentCounterComponent implements AfterViewInit {
 
         this.showReloadIcon();
 
-        this.respondentCount = data
+        const respondentCount = data
           .filter(dataItem => dataItem.isRespondent)
           .reduce((acc, item) => acc = acc + item.amount, 0);
 
+        if (this.respondentCount && respondentCount > this.respondentCount) {
+          triggerConfetti(this.respondentCounterWrapper.nativeElement);
+        }
+        this.respondentCount = respondentCount;
+
         this.totalCount = data
           .reduce((acc, item) => acc = acc + item.amount, 0);
-
+        
         this.graph?.update(data);
       });
     });
@@ -82,5 +89,4 @@ export class RespondentCounterComponent implements AfterViewInit {
       this.reloadIcon = false;
     }, 500);
   }
-
 }

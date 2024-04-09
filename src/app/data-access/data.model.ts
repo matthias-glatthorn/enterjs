@@ -19,6 +19,8 @@ export type RespondentCounterDataItem = {
     amount: number;
 }
 
+export type OnEnterCallback = (isFirst?: boolean) => void;
+
 export type EnterjsGraph<T> = {
-    update: (data: T) => void
+    update: (data: T) => void;
 }
