@@ -1,0 +1,71 @@
+<div class="full-screen-container it-trends">
+  <div class="container">
+    <mat-card>
+      <mat-card-header class="mb-4">
+        <mat-card-title>Welche IT-Trends werden in den jeweiligen Berufsgruppen am wichtigsten bewertet?</mat-card-title>
+        <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon.shouldShow()">
+          <mat-icon fontIcon="autorenew"></mat-icon>
+        </div>
+        <mat-card-subtitle>Die Daten werden alle {{ service.pollingIntervalDelay / 1000 }} Sekunden neu geladen</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="mb-4">
+          <div class="it-trends__wrapper">
+            <div class="it-trends__wrapper__rating-col">
+              <span>Bewertung 6 ≙ Rang 1</span><br />
+              <span>Bewertung 1 ≙ Rang 6</span>
+            </div>
+            <svg class="it-trends-graph" [attr.width]="chartWidth" [attr.height]="chartHeight">
+              <g [attr.transform]="translate(chartPadding.left, chartPadding.top)">
+                <g
+                  class="it-trends-graph__y-axis-label" 
+                  [attr.transform]="translate(-chartPadding.left / 2, innerChartHeigt / 2) + rotate(-90)"
+                >
+                  <text>Durchschnittliche Bewertung</text>
+                </g>
+                @for (item of service.data(); track item) {
+                  <rect
+                    class="it-trends-graph__bar"
+                    [attr.x]="xScale(item.shortName)"
+                    [attr.y]="yScale(item.average)"
+                    [attr.height]="innerChartHeigt - yScale(item.average)"
+                    [attr.width]="xScale.bandwidth()"
+                    [attr.fill]="colorScale(item.shortName)"
+                  />
+                }
+              
+                <g class="x-axis" #xAxis [attr.transform]="translate(0, innerChartHeigt)"></g>
+                <g #yAxis></g>
+              </g>
+            </svg>
+            <div class="flex-1"></div>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="w-100">
+            <mat-form-field>
+              <mat-select
+                [(value)]="selected"
+                (selectionChange)="onProfessionDropdownChange()"
+              >
+                <mat-option value="all">Alle ({{ totalRespondents }})</mat-option>
+                @for (dropdownOption of professionDropdownOptions; track dropdownOption) {
+                  <mat-option [value]="dropdownOption.value">{{dropdownOption.label}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            @for (dataItem of service.data(); track dataItem) {
+              <div class="it-trends__legend">
+                <div class="it-trends__legend__color-indicator" [style.background]="colorScale(dataItem.shortName)"></div>
+                <span>{{ dataItem.group }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

@@ -1,0 +1,48 @@
+.it-trends {
+    background-image: linear-gradient(to right top, #536f01, #426e28, #376c3e, #36684e, #3f6358);
+}
+
+.it-trends__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+  margin: auto;
+}
+
+.it-trends__wrapper__rating-col {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.it-trends-graph__y-axis-label {
+  text-anchor: middle;
+  font-size: 11px;
+}
+
+.it-trends__legend {
+  display: flex;
+}
+
+.it-trends__legend__color-indicator {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.it-trends-graph__bar {
+  transition: height 0.5s;
+}
+
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+  }
+}

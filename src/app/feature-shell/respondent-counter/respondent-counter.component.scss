@@ -10,6 +10,8 @@
     justify-content: center;
     max-width: 400px;
     position: relative;
+    overflow-x: hidden;
+    margin: auto;
 }
 
 .respondent-counter__overlay {
@@ -25,11 +27,6 @@
     color: var(--mat-option-selected-state-label-text-color);
 }
 
-.controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
 .radio-group {
     display: flex;
     flex-direction: column;
@@ -37,42 +34,6 @@
     align-items: flex-start;
 }
 
-.reload-icon {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--mat-slider-focus-state-layer-color);
-    border-radius: 50%;
-    animation: spin 2s infinite linear;
-    opacity: 1;
-    transition: opacity 0.5s;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-}
-
-.reload-icon--hidden {
-    opacity: 0;
-    transition: opacity 2s;
-}
-
-
-::ng-deep {
-    .mat-mdc-card-header {
-        justify-content: center;
-        align-items: center;
-        padding-right: 64px !important;
-        padding-left: 64px !important;
-    }
-
-    .mat-mdc-card-header-text {
-        text-align: center;
-    }
-}
 
 // Graph
 

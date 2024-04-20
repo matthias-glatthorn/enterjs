@@ -3,13 +3,13 @@
         <mat-card class="mb-3">
             <mat-card-header class="mb-4">
                 <mat-card-title>Welche Berufsgruppen haben teilgenommen?</mat-card-title>
-                <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon">
+                <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon.shouldShow()">
                     <mat-icon fontIcon="autorenew"></mat-icon>
                 </div>
                 <mat-card-subtitle>Die Daten werden alle {{ service.pollingIntervalDelay / 1000 }} Sekunden neu geladen</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <div class="respondent-counter__container mb-4">
+                <div class="mb-4">
                     <div #respondentCounterWrapper class="respondent-counter__wrapper">
                         <div class="respondent-counter__overlay">
                             @if(service.showTotal) {

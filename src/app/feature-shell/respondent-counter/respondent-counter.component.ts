@@ -1,17 +1,17 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, effect, runInInjectionContext, Injector, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, effect, runInInjectionContext, Injector, CUSTOM_ELEMENTS_SCHEMA, untracked } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
-import { DataService } from '../../data-access/data.service';
 import { CommonModule } from '@angular/common';
 import { EnterjsGraph, RespondentCounterDataItem } from '../../data-access/data.model';
-import { stringToBoolean } from '../../shared/util-common/string-to-boolean';
+import { stringToBoolean } from '../shared/string-to-boolean';
 import { createGraph } from './respondent-counter-graph/respondent-counter-graph';
-import { confetti } from 'tsparticles-confetti';
-import { triggerConfetti } from '../../shared/util-common/confetti';
+import { triggerConfetti } from '../shared/confetti';
+import { RespondentCounterDataService } from '../../data-access/respondent-counter-data/respondent-counter-data.service';
+import { useReloadIcon } from '../shared/composables/use-reload-icon';
 
 export interface ArcData {
   endAngle: number;
@@ -30,18 +30,16 @@ export class RespondentCounterComponent implements AfterViewInit {
   @ViewChild('respondentCounterWrapper') respondentCounterWrapper!: ElementRef;
   @ViewChild('respondentCounterLegend') respondentCounterLegend!: ElementRef;
 
+  protected reloadIcon = useReloadIcon();
+
   protected respondentCount: number | undefined = undefined;
   protected totalCount = 0;
   protected graph?: EnterjsGraph<RespondentCounterDataItem[]>;
 
-  protected reloadIcon = false;
-
   constructor(
-    protected service: DataService,
+    protected service: RespondentCounterDataService,
     private injector: Injector
-  ) {
-    this.service.startDataPolling();
-  }
+  ) {}
 
   ngAfterViewInit() {
 
@@ -54,7 +52,7 @@ export class RespondentCounterComponent implements AfterViewInit {
       effect(() => {
         const data = this.service.data();
 
-        this.showReloadIcon();
+        untracked(() =>this.reloadIcon.show());
 
         const respondentCount = data
           .filter(dataItem => dataItem.isRespondent)
@@ -78,15 +76,6 @@ export class RespondentCounterComponent implements AfterViewInit {
     this.service.showTotal = showTotal ? showTotal : false;
 
     const data = this.service.data();
-
     this.graph?.update(data);
-  }
-
-  private showReloadIcon() {
-    this.reloadIcon = true;
-
-    setTimeout(() => {
-      this.reloadIcon = false;
-    }, 500);
   }
 }
