@@ -1,3 +1,4 @@
+@import "./theming";
 @import "./variables";
 @import "./margins";
 @import "./animations";
@@ -17,15 +18,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 100%;
 }
 
-.flex-1 {
-  flex: 1;
-}
-
 .full-screen-container {
-    min-height: 100vh;
+    min-height: calc(100vh - 3rem);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 .container {
@@ -36,10 +35,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     @include make-max-widths-container-width();
 }
 
-.controls {
-  display: grid;
-  gap: 40px;
-  grid-template-columns: 1fr 1fr;
+.card-controls {
+  display: flex;
+  flex-direction: column;
+  @media (min-width: map-get($breakpoints, 'md')) {
+    flex-direction: row;
+    gap: 40px;
+  }
 }
 
 .mat-mdc-card {
@@ -88,4 +90,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .reload-icon--hidden {
   opacity: 0;
   transition: opacity 2s;
+}
+
+.simulated-data-actions {
+  display: flex;
+  gap: 10px;
 }

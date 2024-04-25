@@ -10,13 +10,13 @@ export type ItTrendsPreprocessingData = {
   [key: string]: DragnSurveyDataItem[];
 }
 
-export type ItTrendsResponseItem = {
+export type ItTrendsDataItem = {
   group: string;
   shortName: string;
   amount: number;
 }
 
-export type ItTrendsDataItem = {
+export type ItTrendsDisplayItem = {
   group: string;
   shortName: string;
   average: number;
@@ -25,7 +25,7 @@ export type ItTrendsDataItem = {
 export type ItTrendsData = {
   [key: string]: {
     totalRespondents: number;
-    averages: ItTrendsDataItem[]
+    items: ItTrendsDataItem[]
   }
 }
 

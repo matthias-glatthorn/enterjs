@@ -51,9 +51,8 @@ export class RespondentCounterComponent implements AfterViewInit {
     runInInjectionContext(this.injector, () => {
       effect(() => {
         const data = this.service.data();
-
         untracked(() =>this.reloadIcon.show());
-
+        
         const respondentCount = data
           .filter(dataItem => dataItem.isRespondent)
           .reduce((acc, item) => acc = acc + item.amount, 0);

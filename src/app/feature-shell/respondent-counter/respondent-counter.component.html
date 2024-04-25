@@ -1,7 +1,7 @@
-<div class="full-screen-container respondent-counter">
+<div class="full-screen-container respondent-counter mat-app-background">
     <div class="container">
-        <mat-card class="mb-3">
-            <mat-card-header class="mb-4">
+        <mat-card class="mb-2">
+            <mat-card-header class="mb-2">
                 <mat-card-title>Welche Berufsgruppen haben teilgenommen?</mat-card-title>
                 <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon.shouldShow()">
                     <mat-icon fontIcon="autorenew"></mat-icon>
@@ -9,7 +9,7 @@
                 <mat-card-subtitle>Die Daten werden alle {{ service.pollingIntervalDelay / 1000 }} Sekunden neu geladen</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <div class="mb-4">
+                <div class="mb-2">
                     <div #respondentCounterWrapper class="respondent-counter__wrapper">
                         <div class="respondent-counter__overlay">
                             @if(service.showTotal) {
@@ -35,7 +35,10 @@
                             <mat-radio-button [checked]="service.showTotal" value="true">Ja</mat-radio-button>
                         </mat-radio-group>
                     </div>
-                    <div #respondentCounterLegend></div>
+                    <div
+                      #respondentCounterLegend
+                      class="respondent-counter__legend"
+                    ></div>
                 </div>
             </mat-card-content>
         </mat-card>
@@ -49,7 +52,7 @@
                     Simulierte Daten bleiben bis zum Reload des Browsers erhalten
                 </mat-panel-description>
             </mat-expansion-panel-header>
-            <div class="actions">
+            <div class="simulated-data-actions">
                 @for(item of this.service.data(); track item.computed_response) {
                     @if(item.isRespondent) {
                         <button mat-stroked-button (click)="service.addSimulatedData(item)">

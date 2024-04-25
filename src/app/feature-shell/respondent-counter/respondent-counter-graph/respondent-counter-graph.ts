@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import { ArcData } from "../respondent-counter.component";
 import { EnterjsGraph, RespondentCounterDataItem } from "../../../data-access/data.model";
 
-const chartWidth = 300;
-const chartHeight = 300;
+const chartWidth = 350;
+const chartHeight = 350;
 const outerRadius = chartHeight / 2;
 const innerRadius = outerRadius * 0.75;
 const unColored = "#ddd";
@@ -16,7 +16,10 @@ export function createGraph(parentGraph: Element, parentLegend?: Element): Enter
     const containerLegend = parentLegend ? d3.select(parentLegend) : undefined;
 
     const svg = containerGraph.append('svg')
-      .attr("viewBox", [0, 0, chartWidth, chartHeight]);
+      .attr("viewBox", [0, 0, chartWidth, chartHeight])
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      .attr("class", "respondent-counter__graph");
 
     const transformGroup = svg
       .append("g")
@@ -64,8 +67,7 @@ export function createGraph(parentGraph: Element, parentLegend?: Element): Enter
             g.append("text")
               .text(d => d.data.amount > 0 ? d.data.amount : '' )
               .attr("transform", d => "translate(" + arcGenerator.centroid(d) + ")" )
-              .style("text-anchor", "middle")
-              .style("font-size", 12);
+              .style("text-anchor", "middle");
             
             return g;
           },

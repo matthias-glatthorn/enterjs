@@ -1,8 +1,11 @@
+@use '@angular/material' as mat;
+@import "theming";
 @import "variables";
 
+
 .respondent-counter {
-    background-color: #82B1FF;
-    --mdc-elevated-card-container-elevation: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background-color: mat.get-color-from-palette($my-background, 100);
+  --mdc-elevated-card-container-elevation: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .respondent-counter__wrapper {
@@ -27,6 +30,12 @@
     color: var(--mat-option-selected-state-label-text-color);
 }
 
+.respondent-counter__legend {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .radio-group {
     display: flex;
     flex-direction: column;
@@ -38,29 +47,29 @@
 // Graph
 
 ::ng-deep {
-    .arc path {
-        &:hover {
-            opacity: 0.5;
-            cursor: pointer;
-        }
+  .arc path {
+    &:hover {
+      opacity: 0.5;
+      cursor: pointer;
     }
+  }
 
-    .legend {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 5px;
-    }
+  .legend {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
 
-    .legend__color {
-        height: 20px;
-        width: 20px;
-    }
+  .legend__color {
+    height: 20px;
+    width: 20px;
+  }
+
+  .respondent-counter__graph {
+    font-size: 14px;
+  }
 }
 
-// Simulated data
-
-.actions {
-    display: flex;
+.simulated-data-actions {
     flex-wrap: wrap;
-    gap: 10px;
 }

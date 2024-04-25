@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import uniqBy from 'lodash/uniqBy';
-import { DragnSurveyDataItem, ItTrendsData, ItTrendsPreprocessingData, ItTrendsResponseItem, RespondentCounterDataItem } from "./data.model";
+import { DragnSurveyDataItem, ItTrendsData, ItTrendsDataItem, ItTrendsPreprocessingData, RespondentCounterDataItem } from "./data.model";
 import { getShortName } from "./it-trends-data/short-names";
 
 const RESPONDENTCOUNTER_QUESTION_ID = "660862307e269053d90a1469";
@@ -68,7 +68,7 @@ export class PreProcessorService {
 
             acc.push( ...this.createResponses(item) )
             return acc;
-          }, [] as ItTrendsResponseItem[]);
+          }, [] as ItTrendsDataItem[]);
           
           const aggregatedResponses = responses.reduce((acc, response) => {
             const alreadyPresent = acc.find(presentItem => presentItem.group === response.group);
@@ -79,22 +79,21 @@ export class PreProcessorService {
             }
 
             return acc;
-          }, [] as ItTrendsResponseItem[]);
+          }, [] as ItTrendsDataItem[]);
 
           displayItemAcc[profession] = {
             totalRespondents: respondents.length,
-            averages: aggregatedResponses.map(response => ({
+            items: aggregatedResponses.map(response => ({
               group: response.group,
               shortName: response.shortName,
-              average: response.amount / respondents.length
+              amount: response.amount
             }))
             .sort((a, b) => a.shortName.localeCompare(b.shortName))
           }
 
           return displayItemAcc;
         }, {} as ItTrendsData);
-      
-        console.log(displayItems);
+    
       return displayItems;
     }
 
@@ -106,6 +105,6 @@ export class PreProcessorService {
           amount: (computedResponses.length - index)
         });
         return acc;
-      }, [] as ItTrendsResponseItem[]);
+      }, [] as ItTrendsDataItem[]);
     }
 }

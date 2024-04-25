@@ -1,8 +1,8 @@
 <div class="full-screen-container it-trends">
   <div class="container">
-    <mat-card>
+    <mat-card class="mb-2">
       <mat-card-header class="mb-4">
-        <mat-card-title>Welche IT-Trends werden in den jeweiligen Berufsgruppen am wichtigsten bewertet?</mat-card-title>
+        <mat-card-title>Durchschnittliche Bewertung von IT-Trends nach Berufsgruppen</mat-card-title>
         <div class="reload-icon" [class.reload-icon--hidden]="!reloadIcon.shouldShow()">
           <mat-icon fontIcon="autorenew"></mat-icon>
         </div>
@@ -15,57 +15,116 @@
               <span>Bewertung 6 ≙ Rang 1</span><br />
               <span>Bewertung 1 ≙ Rang 6</span>
             </div>
-            <svg class="it-trends-graph" [attr.width]="chartWidth" [attr.height]="chartHeight">
-              <g [attr.transform]="translate(chartPadding.left, chartPadding.top)">
-                <g
-                  class="it-trends-graph__y-axis-label" 
-                  [attr.transform]="translate(-chartPadding.left / 2, innerChartHeigt / 2) + rotate(-90)"
+            <div class="it-trends-graph"
+              [style.width.px]="chartWidth"
+              [style.height.px]="chartHeight"
+            >
+              <svg
+                #xAxis
+                class="it-trends-graph__x-axis"
+                [attr.width]="chartWidth"
+                [attr.height]="scaleHeight"
+              ></svg>
+              <div
+                class="it-trends-graph__y-axis"
+                [style.width.px]="scaleHeight"
+                [style.height.px]="chartHeight"
+              >
+              <span class="it-trends-graph__y-axis__label">Durchschnittliche Bewertung</span>
+                <svg
+                  #yAxis
+                  [attr.width]="scaleHeight"
+                  [attr.height]="chartHeight"
                 >
-                  <text>Durchschnittliche Bewertung</text>
-                </g>
-                @for (item of service.data(); track item) {
-                  <rect
-                    class="it-trends-graph__bar"
-                    [attr.x]="xScale(item.shortName)"
-                    [attr.y]="yScale(item.average)"
-                    [attr.height]="innerChartHeigt - yScale(item.average)"
-                    [attr.width]="xScale.bandwidth()"
-                    [attr.fill]="colorScale(item.shortName)"
-                  />
-                }
-              
-                <g class="x-axis" #xAxis [attr.transform]="translate(0, innerChartHeigt)"></g>
-                <g #yAxis></g>
-              </g>
-            </svg>
-            <div class="flex-1"></div>
+                </svg>
+              </div>
+              <div></div>
+              @for (item of service.data(); track item.shortName) {
+                <div
+                  class="it-trends-graph__bar"
+                  [style.height.px]="yScale(item.average)"
+                  [style.width.px]="xScale.bandwidth()"
+                  [style.background]="colorScale(item.shortName)"
+                ></div>
+              }
+              <div></div>
+
+            </div>
+            <div class="it-trends__wrapper__placeholder-col"></div>
           </div>
         </div>
-        <div class="controls">
+        <div class="card-controls">
           <div class="w-100">
             <mat-form-field>
+              <mat-label>Berufsgruppe</mat-label>
               <mat-select
-                [(value)]="selected"
+                [(value)]="professionFilter"
                 (selectionChange)="onProfessionDropdownChange()"
               >
                 <mat-option value="all">Alle ({{ totalRespondents }})</mat-option>
-                @for (dropdownOption of professionDropdownOptions; track dropdownOption) {
-                  <mat-option [value]="dropdownOption.value">{{dropdownOption.label}}</mat-option>
+                @for (dropdownOption of professionDropdownOptions; track dropdownOption.label) {
+                  <mat-option [value]="dropdownOption.value">{{ dropdownOption.label }} ({{ dropdownOption.amount }})</mat-option>
                 }
               </mat-select>
             </mat-form-field>
           </div>
           <div>
-            @for (dataItem of service.data(); track dataItem) {
-              <div class="it-trends__legend">
-                <div class="it-trends__legend__color-indicator" [style.background]="colorScale(dataItem.shortName)"></div>
-                <span>{{ dataItem.group }}</span>
-              </div>
-            }
+            <mat-chip-set aria-label="It trends legend">
+              @for (dataItem of service.data() | sortByStringLength:'group'; track dataItem.shortName) {
+                <mat-chip disableRipple>
+                  <span class="it-trends-graph__legend-color" [style.background]="colorScale(dataItem.shortName)"></span>
+                  {{ dataItem.group }}
+                </mat-chip>
+              }
+            </mat-chip-set>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+              Dateneingabe simulieren
+          </mat-panel-title>
+          <mat-panel-description>
+              Simulierte Daten bleiben bis zum Reload des Browsers erhalten
+          </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="simulated-data-actions">
+        <mat-form-field class="simulated-data-actions__profession">
+          <mat-label>Berufsgruppe</mat-label>
+          <mat-select
+            [(value)]="selectedSimulatedDataProfession"
+          >
+            @for (dropdownOption of professionDropdownOptions; track dropdownOption.label) {
+              <mat-option [value]="dropdownOption.value">{{dropdownOption.label}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          class="simulated-data-actions__add-btn"
+          (click)="addSimulatedData()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div class="simulated-data-actions">
+        <div class="simulated-data-actions__rating">
+          <p>Sortieren Sie die Liste per Drag and Drop</p>
+          <div cdkDropList (cdkDropListDropped)="onCdkListItemDrop($event)">
+            @for (dragItemData of simulatedDataSorting; track dragItemData.shortName; let index = $index) {
+              <div class="simulated-data-actions__drag-item" cdkDrag>
+                <strong>{{ index + 1 }}</strong>: {{ dragItemData.group }}
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+    </mat-expansion-panel>
   </div>
 
 </div>

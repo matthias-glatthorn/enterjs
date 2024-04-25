@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy, computed, signal } from "@angular/core";
-import { ItTrendsData, ItTrendsDataItem, ProfessionGroup } from "../data.model";
+import { ItTrendsData, ItTrendsDataItem, ItTrendsDisplayItem, ProfessionGroup } from "../data.model";
 import { DataService } from "../data-service/data.service";
 import { BehaviorSubject, Subject, takeUntil } from "rxjs";
 import { PreProcessorService } from "../pre-processor-service";
-import { cloneDeep } from "lodash";
+import { chain, cloneDeep, sumBy } from "lodash";
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,13 @@ export class ItTrendsDataService implements OnDestroy {
   private destroy$ = new Subject<void>();
   
   private selectedGroup$ = new BehaviorSubject<string>('all');
-  private dataSig = signal<ItTrendsDataItem[]>([]);
+  private dataSig = signal<ItTrendsDisplayItem[]>([]);
   public data = computed(() => this.dataSig());
   private groupsSig = signal<ProfessionGroup[]>([]);
   public groups = computed(() => this.groupsSig());
 
   private itTrendsData?: ItTrendsData;
+  private simulatedData: ItTrendsData = {};
 
   get selectedGroup() {
     return this.selectedGroup$.getValue();
@@ -42,7 +43,6 @@ export class ItTrendsDataService implements OnDestroy {
         if (!data) {
           return;
         }
-
         this.itTrendsData = this.preProcessor.makeItTrendsData(data);
 
         this.setData();
@@ -57,38 +57,64 @@ export class ItTrendsDataService implements OnDestroy {
   }
 
   private setData() {
-    
-    if (!this.itTrendsData) {
-      this.dataSig.set([]);
-      return;
+    const itTrendsData = cloneDeep(this.itTrendsData ?? {});
+
+    // aggregate simulated data
+    for (const [group, simulatedData] of Object.entries(this.simulatedData)) {
+      const alreadyPresent = itTrendsData[group];
+      if (!alreadyPresent) {
+        itTrendsData[group] = simulatedData;
+      } else {
+        alreadyPresent.totalRespondents++;
+        alreadyPresent.items = chain([...alreadyPresent.items, ...simulatedData.items])
+          .groupBy('shortName')
+          .map((items) => ({
+            ...items[0],
+            amount: sumBy(items, 'amount')
+          }))
+          .value();
+      }
     }
 
+    console.log(itTrendsData);
+
+    let averageResponses: ItTrendsDisplayItem[] = [];
+
     if (this.selectedGroup === 'all') {
-      const itTrendsData = cloneDeep(this.itTrendsData);
-      const aggregatedResponses = Object.values(itTrendsData).reduce((acc, { averages }) => {
-        for (const item of averages) {
+
+      const aggregatedResponses = Object.values(itTrendsData).reduce((acc, { items }) => {
+        for (const item of items) {
           const alreadyPresent = acc.find(accItem => accItem.group === item.group);
           if (!alreadyPresent) {
-            acc.push(item);
+            acc.push({
+              ...item,
+              amount: item.amount
+            });
           } else {
-            alreadyPresent.average += item.average;
+            alreadyPresent.amount += item.amount;
           }
         }
         
         return acc;
       }, [] as ItTrendsDataItem[]);
 
-      const averageResponses = aggregatedResponses.map(response => ({
+      const aggregatedRespondents = Object.values(itTrendsData).reduce((acc, { totalRespondents }) =>  acc += totalRespondents, 0);
+
+      averageResponses = aggregatedResponses.map(response => ({
         ...response,
-        average: response.average / Object.keys(this.itTrendsData!).length
+        average: response.amount / aggregatedRespondents
       }));
 
-      this.dataSig.set(averageResponses);
     } else {
-      const responses = this.itTrendsData[this.selectedGroup];
-      this.dataSig.set(responses.averages);
-    }
+      const responses = itTrendsData[this.selectedGroup];
+      averageResponses = responses.items.map(response => ({
+        ...response,
+        average: response.amount / responses.totalRespondents
+      }));
 
+    }
+    
+    this.dataSig.set(averageResponses);
   }
 
   private setGroups() {
@@ -103,6 +129,35 @@ export class ItTrendsDataService implements OnDestroy {
     }));
 
     this.groupsSig.set(respondentGroups);
+  }
+
+  public addSimulatedData(group: keyof ItTrendsData, dataItems: ItTrendsDataItem[]) {
+    const alreadyPresentGroup = this.simulatedData[group];
+    /*
+    if(!alreadyPresentGroup) {
+      this.simulatedData[group] = {
+        totalRespondents: 1,
+        items: [{
+          group: itTrendsGroup,
+          shortName: itTrendsShortName,
+          amount: itTrendsRating
+        }]
+      }
+    } else {
+      alreadyPresentGroup.totalRespondents++;
+      const alreadyPresentItem = alreadyPresentGroup.items.find(item => item.shortName === itTrendsShortName);
+      if(!alreadyPresentItem) {
+        alreadyPresentGroup.items.push({
+          group: itTrendsGroup,
+          shortName: itTrendsShortName,
+          amount: itTrendsRating
+        })
+      } else {
+        alreadyPresentItem.amount += itTrendsRating;
+      }
+    }
+    this.setData();
+    */
   }
 
   ngOnDestroy(): void {
