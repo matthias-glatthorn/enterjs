@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RespondentCounterComponent } from './respondent-counter.component';
+import { HttpClientModule } from '@angular/common/http';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RespondentCounterComponent', () => {
   let component: RespondentCounterComponent;
@@ -8,7 +10,7 @@ describe('RespondentCounterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RespondentCounterComponent]
+      imports: [RespondentCounterComponent, HttpClientModule, NoopAnimationsModule]
     })
     .compileComponents();
     

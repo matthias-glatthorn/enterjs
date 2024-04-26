@@ -4,18 +4,20 @@ Diese Angular-Anwendung bildet die Ergebnisse einer Umfrage, welche die Bewertun
 
 ![Screenshot application](docs/assets/img/ItTrendsVisualisation_01.jpg)
 
-## asd
+## Kommunikationspfade und Verteilungsbeziehungen im System
+
+Ein API-Proxy leitet Anfragen an die DragnSurvey API weiter, verhindert dass viele Anfragen in kurzer Zeit zu einer Überschreitung des Rate-Limits der DragnSurvey API führen und speichert die Daten, welche von der DragnSurvey API empfangen wurden. Auf dem Backend-Server werden außerdem Daten aus unterschiedlichen API-Endpunkten aggregiert und vorstrukturiert.
 ![Deployment diagram](docs/assets/img/DeploymentDiagram.svg)
 
-## Development server
+## Lokaler Entwicklungsserver
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Führen Sie `npm run start` aus, um einen lokalen Entwicklungsserver zu starten. Sie erreichen die Anwendung unter der Adresse `http://localhost:4200/`. Die Anwendung wird automatisch neu geladen, wenn sich eine der Quelldateien ändert.
 
-## Build
+## Bereitstellen von Software-Artefakten
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Führen Sie `npm run build` aus um die Software-Artefakte dieses Projekts zu erstellen. Die Artefakte werden im Verzeichnis `dist/` gespeichert.
 
-## Running unit tests
+## Ausführen der Software-Tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Führen Sie `npm run test` aus, um die Software-Tests mit [Jest](https://jestjs.io/) auszuführen.
 
