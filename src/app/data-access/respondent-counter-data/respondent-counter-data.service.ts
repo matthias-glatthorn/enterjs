@@ -10,7 +10,8 @@ import { Subject, takeUntil } from "rxjs";
 export class RespondentCounterDataService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
-  private shouldShowTotal = false;
+  private shouldShowPopulation = false;
+  private population = 46;
 
   private respondentCounterData: RespondentCounterDataItem[] = []; 
   private dataSig = signal<RespondentCounterDataItem[]>([]);
@@ -18,13 +19,13 @@ export class RespondentCounterDataService implements OnDestroy {
   
   private simulatedData: RespondentCounterDataItem[] = [];
 
-  set showTotal(value: boolean) {
-    this.shouldShowTotal = value;
+  set showPopulation(value: boolean) {
+    this.shouldShowPopulation = value;
     this.setDataSig();
   }
 
-  get showTotal() {
-    return this.shouldShowTotal;
+  get showPopulation() {
+    return this.shouldShowPopulation;
   }
 
   get pollingIntervalDelay() {
@@ -55,7 +56,7 @@ export class RespondentCounterDataService implements OnDestroy {
   private setDataSig() {
     const data = [
       ...this.respondentCounterData,
-      ...this.generateNonRespondentsDataItem(),
+      ...this.generatePopulationDataItem(this.respondentCounterData.length),
       ...this.simulatedData
     ];
 
@@ -72,12 +73,12 @@ export class RespondentCounterDataService implements OnDestroy {
     this.dataSig.set(reducedData);
   }
 
-  private generateNonRespondentsDataItem() {
+  private generatePopulationDataItem(respondentCount: number) {
     return [{
       computed_response: 'Nicht teilgenommen',
       colored: false,
       isRespondent: false,
-      amount: this.showTotal ? 5 : 0
+      amount: this.showPopulation ? this.population - respondentCount : 0
     }]
   }
 

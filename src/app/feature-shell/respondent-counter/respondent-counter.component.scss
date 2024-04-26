@@ -36,6 +36,10 @@
   justify-content: center;
 }
 
+.respondent-counter__population-toggle, .respondent-counter__legend {
+  flex: 1
+}
+
 .radio-group {
     display: flex;
     flex-direction: column;

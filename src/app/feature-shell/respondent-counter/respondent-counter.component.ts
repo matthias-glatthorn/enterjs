@@ -4,14 +4,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonModule } from '@angular/common';
 import { EnterjsGraph, RespondentCounterDataItem } from '../../data-access/data.model';
-import { stringToBoolean } from '../shared/string-to-boolean';
 import { createGraph } from './respondent-counter-graph/respondent-counter-graph';
-import { triggerConfetti } from '../shared/confetti';
 import { RespondentCounterDataService } from '../../data-access/respondent-counter-data/respondent-counter-data.service';
 import { useReloadIcon } from '../shared/composables/use-reload-icon';
+import { useConfetti } from '../shared/composables/use-confetti';
 
 export interface ArcData {
   endAngle: number;
@@ -21,7 +20,7 @@ export interface ArcData {
 @Component({
   selector: 'app-respondent-counter',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatProgressBarModule, MatRadioModule, MatExpansionModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatCardModule, MatProgressBarModule, MatSlideToggleModule, MatExpansionModule, MatButtonModule, MatIconModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './respondent-counter.component.html',
   styleUrl: './respondent-counter.component.scss'
@@ -31,9 +30,11 @@ export class RespondentCounterComponent implements AfterViewInit {
   @ViewChild('respondentCounterLegend') respondentCounterLegend!: ElementRef;
 
   protected reloadIcon = useReloadIcon();
+  private confetti = useConfetti(() => this.respondentCounterWrapper.nativeElement);
 
-  protected respondentCount: number | undefined = undefined;
+
   protected totalCount = 0;
+  protected respondentCount = 0;
   protected graph?: EnterjsGraph<RespondentCounterDataItem[]>;
 
   constructor(
@@ -53,14 +54,11 @@ export class RespondentCounterComponent implements AfterViewInit {
         const data = this.service.data();
         untracked(() =>this.reloadIcon.show());
         
-        const respondentCount = data
+        this.respondentCount = data
           .filter(dataItem => dataItem.isRespondent)
           .reduce((acc, item) => acc = acc + item.amount, 0);
 
-        if (this.respondentCount && respondentCount > this.respondentCount) {
-          triggerConfetti(this.respondentCounterWrapper.nativeElement);
-        }
-        this.respondentCount = respondentCount;
+        this.confetti.updateRespondentCount(this.respondentCount);
 
         this.totalCount = data
           .reduce((acc, item) => acc = acc + item.amount, 0);
@@ -70,9 +68,8 @@ export class RespondentCounterComponent implements AfterViewInit {
     });
   }
 
-  protected onShowTotalChange({ value }: { value: string }) {
-    const showTotal = stringToBoolean(value) ?? false;
-    this.service.showTotal = showTotal ? showTotal : false;
+  protected onShowTotalChange(event: MatSlideToggleChange) {
+    this.service.showPopulation = event.checked;
 
     const data = this.service.data();
     this.graph?.update(data);

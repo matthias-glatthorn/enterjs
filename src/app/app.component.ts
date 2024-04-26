@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RespondentCounterComponent } from './feature-shell/respondent-counter/respondent-counter.component';
 import { ItTrendsComponent } from './feature-shell/it-trends/it-trends.component';
 import { IconBarComponent } from './feature-shell/icon-bar/icon-bar.component';
+import { FooterComponent } from './feature-shell/footer/footer.component';
 import { DataService } from './data-access/data-service/data.service';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from '@angular/platform-browser';
@@ -9,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RespondentCounterComponent, ItTrendsComponent, IconBarComponent],
+  imports: [RespondentCounterComponent, ItTrendsComponent, IconBarComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -12,33 +12,26 @@
                 <div class="mb-2">
                     <div #respondentCounterWrapper class="respondent-counter__wrapper">
                         <div class="respondent-counter__overlay">
-                            @if(service.showTotal) {
+                            @if(service.showPopulation) {
                                 <span>
-                                    {{ respondentCount ?? 0 }} Antworten aus {{ totalCount }}
+                                    {{ respondentCount }} Antworten aus {{ totalCount }}
                                 </span>
                             } @else {
                                 <span>
-                                    {{ respondentCount ?? 0 }} Antworten
+                                    {{ respondentCount }} Antworten
                                 </span>
                             }
                         </div>
                     </div>
                 </div>
-                <div class="controls">
-                    <div>
-                        <label>Zeige Anteil an Grundgesamtheit</label>
-                        <mat-radio-group
-                            class="radio-group"
-                            (change)="onShowTotalChange($event)"
-                        >
-                            <mat-radio-button [checked]="!service.showTotal" value="false">Nein</mat-radio-button>
-                            <mat-radio-button [checked]="service.showTotal" value="true">Ja</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                    <div
-                      #respondentCounterLegend
-                      class="respondent-counter__legend"
-                    ></div>
+                <div class="card-controls">
+                  <p class="respondent-counter__population-toggle">
+                    <mat-slide-toggle (change)="onShowTotalChange($event)">Zeige Anteil an Grundgesamtheit</mat-slide-toggle>
+                  </p>
+                  <div
+                    #respondentCounterLegend
+                    class="respondent-counter__legend"
+                  ></div>
                 </div>
             </mat-card-content>
         </mat-card>

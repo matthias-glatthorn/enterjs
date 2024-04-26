@@ -9,9 +9,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkDropList, CdkDrag, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ItTrendsDataItem, ProfessionGroup } from '../../data-access/data.model';
+import { ItTrendsDataItem, ItTrendsDisplayItem, ProfessionGroup } from '../../data-access/data.model';
 import { useReloadIcon } from '../shared/composables/use-reload-icon';
 import { SortByStringLengthPipe } from '../shared/pipes/sort-by-string-length.pipe';
+import { unionBy } from 'lodash';
+import { useConfetti } from '../shared/composables/use-confetti';
 
 type DropdownOption = {
   value: string;
@@ -37,8 +39,10 @@ type DragItemData = {
 export class ItTrendsComponent {
   @ViewChild("xAxis") xAxis!: ElementRef;
   @ViewChild("yAxis") yAxis!: ElementRef;
+  @ViewChild('itTrendsWrapper') itTrendsWrapper!: ElementRef;
 
   protected reloadIcon = useReloadIcon();
+  private confetti = useConfetti(() => this.itTrendsWrapper.nativeElement);
 
   protected professionDropdownOptions: DropdownOption[] = [];
   protected professionFilter = 'all';
@@ -46,7 +50,7 @@ export class ItTrendsComponent {
   protected selectedSimulatedDataProfession?: string;
   protected simulatedDataSorting: DragItemData[] = [];
 
-  protected totalRespondents = 0;
+  protected respondentCount = 0;
   
   protected chartWidth = 350;
   protected chartHeight = 350;
@@ -70,17 +74,16 @@ export class ItTrendsComponent {
       this.yScale.domain([ 0, this.highestPossibleRating ]);
 
       this.drawAxes(data.length);
-      this.simulatedDataSorting = data.map(item => ({
-        group: item.group,
-        shortName: item.shortName
-      }));
+      this.updateSimulatedDataSortingDragItems(data);
     });
 
     effect(() => {
       const groups = this.service.groups();
 
-      this.totalRespondents = Object.values(groups)
+      this.respondentCount = Object.values(groups)
         .reduce((acc, { amount }) => acc += amount, 0);
+      
+      this.confetti.updateRespondentCount(this.respondentCount);
 
       this.updateProfessionDropdownOptions(groups)
     });
@@ -103,11 +106,11 @@ export class ItTrendsComponent {
   }
 
   protected addSimulatedData() {
-    const dataItems: ItTrendsDataItem[] = [];
-
     if (!this.selectedSimulatedDataProfession) {
       return;
     }
+
+    const dataItems: ItTrendsDataItem[] = [];
     
     for (let index=0; index<this.simulatedDataSorting.length; index++) {
       const dragItemData = this.simulatedDataSorting[index];
@@ -139,8 +142,16 @@ export class ItTrendsComponent {
       .attr("transform", `translate(${this.scaleHeight}, 0)`);
   }
 
-  private updateProfessionDropdownOptions(groups: ProfessionGroup[]) {
+  private updateSimulatedDataSortingDragItems(data: ItTrendsDisplayItem[]) {
+    const dragItems = data.map(item => ({
+      group: item.group,
+      shortName: item.shortName
+    }));
 
+    this.simulatedDataSorting = unionBy(this.simulatedDataSorting, dragItems, 'shortName');
+  }
+
+  private updateProfessionDropdownOptions(groups: ProfessionGroup[]) {
     this.professionDropdownOptions = groups.map(group => ({
       value: group.label,
       label: `${ group.label }`,

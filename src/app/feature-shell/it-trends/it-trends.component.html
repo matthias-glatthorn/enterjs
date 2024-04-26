@@ -10,7 +10,7 @@
       </mat-card-header>
       <mat-card-content>
         <div class="mb-4">
-          <div class="it-trends__wrapper">
+          <div #itTrendsWrapper class="it-trends__wrapper">
             <div class="it-trends__wrapper__rating-col">
               <span>Bewertung 6 ≙ Rang 1</span><br />
               <span>Bewertung 1 ≙ Rang 6</span>
@@ -61,7 +61,7 @@
                 [(value)]="professionFilter"
                 (selectionChange)="onProfessionDropdownChange()"
               >
-                <mat-option value="all">Alle ({{ totalRespondents }})</mat-option>
+                <mat-option value="all">Alle ({{ respondentCount }})</mat-option>
                 @for (dropdownOption of professionDropdownOptions; track dropdownOption.label) {
                   <mat-option [value]="dropdownOption.value">{{ dropdownOption.label }} ({{ dropdownOption.amount }})</mat-option>
                 }
@@ -113,7 +113,7 @@
       </div>
       <div class="simulated-data-actions">
         <div class="simulated-data-actions__rating">
-          <p>Sortieren Sie die Liste per Drag and Drop</p>
+          <p>Sortieren Sie die Liste nach Rang per Drag and Drop</p>
           <div cdkDropList (cdkDropListDropped)="onCdkListItemDrop($event)">
             @for (dragItemData of simulatedDataSorting; track dragItemData.shortName; let index = $index) {
               <div class="simulated-data-actions__drag-item" cdkDrag>

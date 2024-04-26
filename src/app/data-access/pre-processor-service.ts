@@ -57,8 +57,8 @@ export class PreProcessorService {
           return acc;
         }, {} as ItTrendsPreprocessingData);
 
-      const displayItems = Object.entries(respondentsByProfession)
-        .reduce((displayItemAcc, [profession, respondents]) => {
+      const dataItems = Object.entries(respondentsByProfession)
+        .reduce((dataItemsAcc, [profession, respondents]) => {
 
           const responses = respondents.reduce((acc, { value: respondent }) => {
             const item = (respondent[0].computed_response as string[]).map(val => ({
@@ -81,7 +81,7 @@ export class PreProcessorService {
             return acc;
           }, [] as ItTrendsDataItem[]);
 
-          displayItemAcc[profession] = {
+          dataItemsAcc[profession] = {
             totalRespondents: respondents.length,
             items: aggregatedResponses.map(response => ({
               group: response.group,
@@ -91,10 +91,10 @@ export class PreProcessorService {
             .sort((a, b) => a.shortName.localeCompare(b.shortName))
           }
 
-          return displayItemAcc;
+          return dataItemsAcc;
         }, {} as ItTrendsData);
     
-      return displayItems;
+      return dataItems;
     }
 
     private createResponses(computedResponses:  { group: string, shortName: string }[]) {
