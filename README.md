@@ -21,3 +21,6 @@ Führen Sie `npm run build` aus um die Software-Artefakte dieses Projekts zu ers
 
 Führen Sie `npm run test` aus, um die Software-Tests mit [Jest](https://jestjs.io/) auszuführen.
 
+## Ausführen der statischen Code-Analyse
+
+Führen Sie `npm run lint` aus, um die statische Code-Analyse mit [ESLint](https://eslint.org/) auszuführen.

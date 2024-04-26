@@ -49,8 +49,8 @@ export function createGraph(parentGraph: Element, parentLegend?: Element): Enter
 
     function updateGraph(data: RespondentCounterDataItem[]) {
 
-      transformGroup.selectAll(".arc")
-        .data(pieGenerator(data), (d: any) => d.data.computed_response)
+      transformGroup.selectAll<SVGElement, d3.PieArcDatum<RespondentCounterDataItem>>(".arc")
+        .data(pieGenerator(data), (d) => d.data.computed_response)
         .join(
           enter => {
             const g = enter.append("g")

@@ -7,7 +7,8 @@ import { cloneDeep } from 'lodash';
 })
 export class SortByStringLengthPipe implements PipeTransform {
 
- transform(array: any[], property: string): any[] {
+  // eslint-disable-next-line
+  transform(array: any[], property: string): any[] {
     return cloneDeep(array).sort((a, b) => b[property].length - a[property].length);
- }
+  }
 }
