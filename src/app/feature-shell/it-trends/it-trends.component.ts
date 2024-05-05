@@ -58,7 +58,7 @@ export class ItTrendsComponent {
   protected highestPossibleRating = 6;
 
   xScale = d3.scaleBand()
-    .range([0, this.chartHeight]);
+    .range([0, this.chartWidth]);
 
   yScale = d3.scaleLinear()
     .range([0, this.chartHeight]);

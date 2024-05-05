@@ -11,7 +11,7 @@ export class RespondentCounterDataService implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   private shouldShowPopulation = false;
-  private population = 46;
+  private population = 270;
 
   private respondentCounterData: RespondentCounterDataItem[] = []; 
   private dataSig = signal<RespondentCounterDataItem[]>([]);
